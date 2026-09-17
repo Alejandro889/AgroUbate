@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroUbaté AI</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+      integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+  :root {
+    --verde: #1e6b3c;
+    --verde-claro: #e6f4ea;
+    --naranja: #c9720c;
+    --rojo: #b3261e;
+    --gris: #555;
+    --borde: #d8dee2;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    margin: 0; padding: 0 16px 60px;
+    background: #fafafa; color: #222;
+  }
+  .contenedor { max-width: 1100px; margin: 0 auto; }
+  header { padding: 24px 0 8px; }
+  h1 { margin: 0; font-size: 1.8rem; }
+  .subtitulo { color: var(--gris); margin-top: 4px; }
+  .tarjeta {
+    background: #fff; border: 1px solid var(--borde); border-radius: 10px;
+    padding: 20px; margin-bottom: 20px;
+  }
+  h2 { font-size: 1.2rem; margin-top: 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+  label { display: block; font-size: 0.9rem; margin: 12px 0 4px; font-weight: 600; }
+  input[type="number"], select {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--borde); border-radius: 6px;
+    font-size: 1rem; background: #f7f7f9;
+  }
+  details { margin-top: 16px; border: 1px solid var(--borde); border-radius: 6px; padding: 8px 12px; }
+  summary { cursor: pointer; font-weight: 600; }
+  button#btn-calcular {
+    margin-top: 20px; width: 100%; padding: 14px; font-size: 1.05rem; font-weight: 700;
+    background: var(--verde); color: white; border: none; border-radius: 8px; cursor: pointer;
+  }
+  button#btn-calcular:hover { background: #16522d; }
+  .alerta { padding: 14px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.95rem; }
+  .alerta-exito { background: var(--verde-claro); color: var(--verde); border: 1px solid #b7ddc3; }
+  .alerta-error { background: #fbeaea; color: var(--rojo); border: 1px solid #f1c3c0; }
+  .alerta-advertencia { background: #fff6e5; color: var(--naranja); border: 1px solid #ffe1a8; }
+  .metricas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 8px; }
+  @media (max-width: 720px) { .metricas { grid-template-columns: 1fr 1fr; } }
+  .metrica { background: #fff; border: 1px solid var(--borde); border-radius: 10px; padding: 14px 16px; }
+  .metrica .etiqueta { font-size: 0.82rem; color: var(--gris); }
+  .metrica .valor { font-size: 1.4rem; font-weight: 700; margin-top: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 8px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--borde); text-align: left; white-space: nowrap; }
+  th { background: #f2f4f2; position: sticky; top: 0; }
+  tbody tr:hover { background: #f7faf7; }
+  .tabla-scroll { overflow-x: auto; }
+  #mapa { height: 480px; border-radius: 8px; margin-top: 8px; }
+  footer { color: var(--gris); font-size: 0.8rem; text-align: center; margin-top: 30px; }
+  .oculto { display: none; }
+</style>
+</head>
+<body>
+<div class="contenedor">
+  <header>
+    <h1>🐄 AgroUbaté AI</h1>
+    <p class="subtitulo">Encuentra la combinación de tienda de insumos y centro de acopio que maximiza tu margen neto mensual, en la provincia de Ubaté. Versión HTML de un solo archivo — no requiere instalación.</p>
+  </header>
+
+  <div class="tarjeta">
+    <form id="form-ganadero">
+      <div class="grid2">
+        <div>
+          <h2>Tu finca</h2>
+          <label for="municipio">Municipio de tu finca</label>
+          <select id="municipio"></select>
+
+          <label for="litros_dia">Producción diaria de leche (litros/día)</label>
+          <input type="number" id="litros_dia" min="1" max="2000" step="1" value="80" required>
+
+          <label for="dias_mes">Días del mes a proyectar</label>
+          <input type="number" id="dias_mes" min="28" max="31" step="1" value="30" required>
+
+          <h2 style="margin-top:20px;">Calidad de tu leche</h2>
+          <label for="grasa_pct">Grasa (%)</label>
+          <input type="number" id="grasa_pct" min="0" max="10" step="0.1" value="3.6" required>
+
+          <label for="proteina_pct">Proteína (%)</label>
+          <input type="number" id="proteina_pct" min="0" max="10" step="0.1" value="3.2" required>
+
+          <label for="solidos_pct">Sólidos totales (%)</label>
+          <input type="number" id="solidos_pct" min="0" max="20" step="0.1" value="12.5" required>
+
+          <label for="ufc">Recuento bacteriano (UFC/mL)</label>
+          <input type="number" id="ufc" min="0" max="2000000" step="1000" value="20000" required>
+        </div>
+        <div>
+          <h2>Insumos que compras al mes</h2>
+          <label for="bultos_concentrado">Bultos de concentrado lechero (40 kg)</label>
+          <input type="number" id="bultos_concentrado" min="0" max="100" step="1" value="4" required>
+
+          <label for="bultos_sal">Bultos de sal mineralizada (40 kg)</label>
+          <input type="number" id="bultos_sal" min="0" max="100" step="1" value="1" required>
+
+          <label for="unidades_antiparasitario">Unidades de antiparasitario</label>
+          <input type="number" id="unidades_antiparasitario" min="0" max="50" step="1" value="1" required>
+
+          <label for="unidades_antibiotico">Unidades de antibiótico</label>
+          <input type="number" id="unidades_antibiotico" min="0" max="50" step="1" value="1" required>
+
+          <h2 style="margin-top:20px;">Transporte</h2>
+          <label for="viajes_tienda_mes">Viajes al mes a la tienda de insumos</label>
+          <input type="number" id="viajes_tienda_mes" min="1" max="30" step="1" value="1" required>
+
+          <label for="costo_por_km">Costo de transporte por km, ida ($ COP)</label>
+          <input type="number" id="costo_por_km" min="0" max="10000" step="50" value="700" required>
+        </div>
+      </div>
+
+      <details>
+        <summary>Configuración avanzada: composición de referencia de la leche</summary>
+        <p style="font-size:0.85rem;color:var(--gris);">El bono por calidad se calcula sobre la diferencia frente a estos valores de referencia (estimación de la industria). Ajústalos si tu comprador usa otros.</p>
+        <label for="grasa_ref">Grasa de referencia (%)</label>
+        <input type="number" id="grasa_ref" min="0" max="10" step="0.1" value="3.0">
+        <label for="proteina_ref">Proteína de referencia (%)</label>
+        <input type="number" id="proteina_ref" min="0" max="10" step="0.1" value="3.0">
+        <label for="solidos_ref">Sólidos totales de referencia (%)</label>
+        <input type="number" id="solidos_ref" min="0" max="20" step="0.1" value="11.3">
+      </details>
+
+      <button type="submit" id="btn-calcular">Calcular la mejor combinación</button>
+    </form>
+  </div>
+
+  <div id="salida"></div>
+</div>
+
+<footer>AgroUbaté AI — proyecto académico. Datos y fórmulas: ver <code>data/fuentes.md</code> y <code>docs/eslabon-3-logica-negocio.md</code> en la carpeta del proyecto.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
+        integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+// ============================================================
+// Datos (Eslabón 2) — copia embebida de data/tiendas_insumos.json
+// y data/centros_acopio.json para que el archivo funcione con
+// doble clic, sin servidor local (fetch() de archivos locales
+// suele bloquearse por CORS al abrir un HTML directamente).
+// ============================================================
+const TIENDAS = [
+  {
+    "id": "T01",
+    "nombre": "Cooperativa Agropecuaria del Valle de Ubaté",
+    "municipio": "Villa de San Diego de Ubaté",
+    "direccion": "Calle 7 # 9-85, Ubaté",
+    "latitud": 5.3062,
+    "longitud": -73.8149,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 96500,
+      "sal_mineralizada_bulto_40kg": 98000,
+      "antiparasitario_comun": 34000,
+      "antibiotico_comun": 42000
+    },
+    "descuento_volumen": {
+      "umbral_bultos": 15,
+      "porcentaje": 5
+    },
+    "horario": "Lunes a sábado 7:00 a.m. - 5:00 p.m.",
+    "fuente": "REAL",
+    "fuente_cita": "Nombre, municipio y dirección verificados en directorio empresarial (informacolombia.com / einforma.co, búsqueda 2026). Precios y condiciones comerciales: ESTIMADOS a partir de referencias reales de mercado (ver data/fuentes.md)."
+  },
+  {
+    "id": "T02",
+    "nombre": "Serviagrofinca - Punto de venta Ubaté",
+    "municipio": "Villa de San Diego de Ubaté",
+    "direccion": "Zona urbana, vía a Chiquinquirá, Ubaté",
+    "latitud": 5.3021,
+    "longitud": -73.8187,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 99500,
+      "sal_mineralizada_bulto_40kg": 104000,
+      "antiparasitario_comun": 38500,
+      "antibiotico_comun": 45000
+    },
+    "descuento_volumen": {
+      "umbral_bultos": 20,
+      "porcentaje": 7
+    },
+    "horario": "Lunes a sábado 7:30 a.m. - 5:30 p.m.",
+    "fuente": "REAL",
+    "fuente_cita": "Serviagrofinca (empresa matriz en Chiquinquirá, Boyacá) confirma tener punto de venta en Ubaté (serviagrofinca.com, búsqueda 2026). Dirección exacta del local no publicada: ESTIMADA. Precios: ESTIMADOS (ver data/fuentes.md)."
+  },
+  {
+    "id": "T03",
+    "nombre": "COOPALAC - Cooperativa de Productores Agropecuarios de Lenguazaque",
+    "municipio": "Lenguazaque",
+    "direccion": "Carrera 5 # 2-09, Lenguazaque Centro",
+    "latitud": 5.3129,
+    "longitud": -73.7159,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 97800,
+      "sal_mineralizada_bulto_40kg": 101000,
+      "antiparasitario_comun": 36000,
+      "antibiotico_comun": 43500
+    },
+    "descuento_volumen": {
+      "umbral_bultos": 10,
+      "porcentaje": 4
+    },
+    "horario": "Lunes a viernes 8:00 a.m. - 12:00 m. y 2:00 p.m. - 5:00 p.m.; sábados 8:00 a.m. - 1:00 p.m.",
+    "fuente": "REAL",
+    "fuente_cita": "Nombre, municipio, dirección y teléfono (320 963 0180) verificados en directorio empresarial (einforma.co / empresite, búsqueda 2026). Precios y condiciones comerciales: ESTIMADOS (ver data/fuentes.md)."
+  },
+  {
+    "id": "T04",
+    "nombre": "Serviagrofinca - Punto de venta Simijaca",
+    "municipio": "Simijaca",
+    "direccion": "Zona urbana, Simijaca",
+    "latitud": 5.5091,
+    "longitud": -73.8459,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 98800,
+      "sal_mineralizada_bulto_40kg": 103500,
+      "antiparasitario_comun": 37000,
+      "antibiotico_comun": 44000
+    },
+    "descuento_volumen": {
+      "umbral_bultos": 20,
+      "porcentaje": 7
+    },
+    "horario": "Lunes a sábado 7:30 a.m. - 5:30 p.m.",
+    "fuente": "REAL",
+    "fuente_cita": "Serviagrofinca confirma punto de venta en Simijaca (serviagrofinca.com, búsqueda 2026). Dirección exacta no publicada: ESTIMADA. Precios: ESTIMADOS (ver data/fuentes.md)."
+  },
+  {
+    "id": "T05",
+    "nombre": "Contrigran (planta y venta directa de sal mineralizada)",
+    "municipio": "Cucunubá",
+    "direccion": "Kilómetro 1, vía Ubaté - Cucunubá",
+    "latitud": 5.2601,
+    "longitud": -73.7802,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 101000,
+      "sal_mineralizada_bulto_40kg": 94500,
+      "antiparasitario_comun": 39000,
+      "antibiotico_comun": 46000
+    },
+    "descuento_volumen": {
+      "umbral_bultos": 25,
+      "porcentaje": 8
+    },
+    "horario": "Lunes a viernes 7:00 a.m. - 5:00 p.m.",
+    "fuente": "REAL",
+    "fuente_cita": "Contrigran fabrica y comercializa la línea 'Sal Bovimex leche Ubaté' desde su planta en Km 1 vía Ubaté-Cucunubá (contrigran.co, búsqueda 2026). El precio de la sal mineralizada usa como referencia real el rango de mercado citado en data/fuentes.md; el resto de precios y condiciones: ESTIMADOS."
+  },
+  {
+    "id": "T06",
+    "nombre": "Agroinsumos El Páramo",
+    "municipio": "Guachetá",
+    "direccion": "Carrera 4 # 3-20, Guachetá",
+    "latitud": 5.3224,
+    "longitud": -73.6839,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 95000,
+      "sal_mineralizada_bulto_40kg": 97500,
+      "antiparasitario_comun": 33000,
+      "antibiotico_comun": 41000
+    },
+    "descuento_volumen": {
+      "umbral_bultos": 12,
+      "porcentaje": 5
+    },
+    "horario": "Lunes a sábado 7:00 a.m. - 5:00 p.m.",
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo (no corresponde a un negocio verificado)."
+  },
+  {
+    "id": "T07",
+    "nombre": "Almacén Agropecuario Sutatausa",
+    "municipio": "Sutatausa",
+    "direccion": "Calle Principal # 2-15, Sutatausa",
+    "latitud": 5.2676,
+    "longitud": -73.8779,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 97000,
+      "sal_mineralizada_bulto_40kg": 100000,
+      "antiparasitario_comun": 35000,
+      "antibiotico_comun": 43000
+    },
+    "descuento_volumen": {
+      "umbral_bultos": 15,
+      "porcentaje": 6
+    },
+    "horario": "Lunes a sábado 8:00 a.m. - 5:00 p.m.",
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo (no corresponde a un negocio verificado)."
+  },
+  {
+    "id": "T08",
+    "nombre": "Agropecuaria La Laguna",
+    "municipio": "Tausa",
+    "direccion": "Carrera 3 # 4-10, Tausa",
+    "latitud": 5.2023,
+    "longitud": -73.8978,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 99000,
+      "sal_mineralizada_bulto_40kg": 102000,
+      "antiparasitario_comun": 36500,
+      "antibiotico_comun": 44500
+    },
+    "descuento_volumen": {
+      "umbral_bultos": 15,
+      "porcentaje": 5
+    },
+    "horario": "Lunes a sábado 7:30 a.m. - 5:00 p.m.",
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo (no corresponde a un negocio verificado)."
+  },
+  {
+    "id": "T09",
+    "nombre": "Insumos Agrícolas Carupa",
+    "municipio": "Carmen de Carupa",
+    "direccion": "Calle 5 # 3-08, Carmen de Carupa",
+    "latitud": 5.341,
+    "longitud": -73.909,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 100000,
+      "sal_mineralizada_bulto_40kg": 103000,
+      "antiparasitario_comun": 37500,
+      "antibiotico_comun": 45500
+    },
+    "descuento_volumen": {
+      "umbral_bultos": 10,
+      "porcentaje": 4
+    },
+    "horario": "Lunes a sábado 8:00 a.m. - 5:00 p.m.",
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo (no corresponde a un negocio verificado)."
+  },
+  {
+    "id": "T10",
+    "nombre": "Agroinsumos Fúquene",
+    "municipio": "Fúquene",
+    "direccion": "Carrera 6 # 4-22, Fúquene",
+    "latitud": 5.407,
+    "longitud": -73.7656,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 96000,
+      "sal_mineralizada_bulto_40kg": 99500,
+      "antiparasitario_comun": 34500,
+      "antibiotico_comun": 42500
+    },
+    "descuento_volumen": {
+      "umbral_bultos": 12,
+      "porcentaje": 5
+    },
+    "horario": "Lunes a sábado 7:00 a.m. - 5:00 p.m.",
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo (no corresponde a un negocio verificado)."
+  },
+  {
+    "id": "T11",
+    "nombre": "Almacén Ganadero Susa",
+    "municipio": "Susa",
+    "direccion": "Calle 4 # 5-16, Susa",
+    "latitud": 5.4547,
+    "longitud": -73.8234,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 98000,
+      "sal_mineralizada_bulto_40kg": 101500,
+      "antiparasitario_comun": 36000,
+      "antibiotico_comun": 44000
+    },
+    "descuento_volumen": {
+      "umbral_bultos": 15,
+      "porcentaje": 6
+    },
+    "horario": "Lunes a sábado 7:30 a.m. - 5:00 p.m.",
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo (no corresponde a un negocio verificado)."
+  }
+];
+const ACOPIOS = [
+  {
+    "id": "A01",
+    "nombre": "Doña Leche Alimentos S.A. (Acopio de Leche Ubaté)",
+    "municipio": "Villa de San Diego de Ubaté",
+    "latitud": 5.3115,
+    "longitud": -73.8072,
+    "precio_base_litro": 1780,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.4,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 150,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 30,
+    "recoge_en_finca": true,
+    "fuente": "REAL",
+    "fuente_cita": "Empresa, municipio y planta de enfriamiento ('Acopio de Leche Ubaté', construida en 1984) verificados en donaleche.com y directorios empresariales, búsqueda 2026. Bonificaciones por proteína/grasa/sólidos totales y por UFC: REALES, Resolución 017 de 2012 actualizada, Región 1 (Trópico Alto - incluye Cundinamarca), vigente marzo 2025 - febrero 2026 (minagricultura.gov.co). Precio base por litro, volumen mínimo, frecuencia, plazo de pago y coordenadas exactas: ESTIMADOS (ver data/fuentes.md)."
+  },
+  {
+    "id": "A02",
+    "nombre": "Lácteos Villa de Ubaté",
+    "municipio": "Villa de San Diego de Ubaté",
+    "latitud": 5.2841,
+    "longitud": -73.7961,
+    "precio_base_litro": 1750,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.4,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 60,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 15,
+    "recoge_en_finca": true,
+    "fuente": "REAL",
+    "fuente_cita": "Empresa, ubicación (Km 5 vía Ubaté-Chiquinquirá, sector Puente del Río) y teléfono verificados en lacteosvilladeubate.com y directorios, búsqueda 2026. Bonificaciones por componente: REALES (misma fuente que A01). Precio base, volumen mínimo, frecuencia, plazo de pago: ESTIMADOS."
+  },
+  {
+    "id": "A03",
+    "nombre": "Federación de Productores Lecheros Provincia de Ubaté y Áreas Circunvecinas (centro de acopio asociativo)",
+    "municipio": "Villa de San Diego de Ubaté",
+    "latitud": 5.3068,
+    "longitud": -73.8161,
+    "precio_base_litro": 1820,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.4,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 30,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 10,
+    "recoge_en_finca": false,
+    "fuente": "REAL",
+    "fuente_cita": "Organización, dirección (Cra 5 # 14A-21, Ubaté) y teléfono (311 514 2155) verificados en directorio empresarial, búsqueda 2026. Al ser una asociación de pequeños productores, opera con volumen mínimo bajo y exige entrega en el punto de acopio (no recoge en finca): supuesto operativo razonado, no verificado literalmente. Bonificaciones por componente: REALES (misma fuente que A01). Precio base, plazo de pago: ESTIMADOS."
+  },
+  {
+    "id": "A04",
+    "nombre": "Alquería (punto de acopio regional)",
+    "municipio": "Simijaca",
+    "latitud": 5.5065,
+    "longitud": -73.8412,
+    "precio_base_litro": 1800,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.4,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 200,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 45,
+    "recoge_en_finca": true,
+    "fuente": "REAL",
+    "fuente_cita": "Presencia de Alquería como comprador industrial en la cuenca lechera Ubaté-Chiquinquirá-Simijaca confirmada en prensa especializada (CONtexto Ganadero, La República, búsqueda 2026). Dirección exacta de la instalación de acopio en Simijaca no publicada: coordenadas y demás condiciones comerciales ESTIMADAS (ver data/fuentes.md). Plazo de pago de 45 días refleja quejas reportadas en prensa sobre plazos largos de la industria; el valor exacto es una estimación."
+  },
+  {
+    "id": "A05",
+    "nombre": "Centro de Acopio Lenguazaque",
+    "municipio": "Lenguazaque",
+    "latitud": 5.3118,
+    "longitud": -73.7148,
+    "precio_base_litro": 1740,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.4,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 40,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 15,
+    "recoge_en_finca": true,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01), aplicadas por ubicarse en la Región 1 del sistema de pago por calidad."
+  },
+  {
+    "id": "A06",
+    "nombre": "Cooperativa Lechera Guachetá",
+    "municipio": "Guachetá",
+    "latitud": 5.3231,
+    "longitud": -73.6822,
+    "precio_base_litro": 1730,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.4,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 35,
+    "frecuencia_recoleccion": "Interdiaria",
+    "plazo_pago_dias": 15,
+    "recoge_en_finca": false,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  },
+  {
+    "id": "A07",
+    "nombre": "Centro de Acopio Cucunubá",
+    "municipio": "Cucunubá",
+    "latitud": 5.2565,
+    "longitud": -73.7679,
+    "precio_base_litro": 1745,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.4,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 40,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 15,
+    "recoge_en_finca": true,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  },
+  {
+    "id": "A08",
+    "nombre": "Enfriadero Sutatausa",
+    "municipio": "Sutatausa",
+    "latitud": 5.2688,
+    "longitud": -73.8791,
+    "precio_base_litro": 1720,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.4,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 30,
+    "frecuencia_recoleccion": "Interdiaria",
+    "plazo_pago_dias": 20,
+    "recoge_en_finca": false,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  },
+  {
+    "id": "A09",
+    "nombre": "Centro de Acopio Tausa",
+    "municipio": "Tausa",
+    "latitud": 5.2035,
+    "longitud": -73.8991,
+    "precio_base_litro": 1710,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.4,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 30,
+    "frecuencia_recoleccion": "Interdiaria",
+    "plazo_pago_dias": 20,
+    "recoge_en_finca": false,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  },
+  {
+    "id": "A10",
+    "nombre": "Cooperativa Lechera Carmen de Carupa",
+    "municipio": "Carmen de Carupa",
+    "latitud": 5.3422,
+    "longitud": -73.9103,
+    "precio_base_litro": 1705,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.4,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 25,
+    "frecuencia_recoleccion": "Interdiaria",
+    "plazo_pago_dias": 20,
+    "recoge_en_finca": false,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  },
+  {
+    "id": "A11",
+    "nombre": "Centro de Acopio Fúquene",
+    "municipio": "Fúquene",
+    "latitud": 5.4082,
+    "longitud": -73.7638,
+    "precio_base_litro": 1755,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.4,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 35,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 15,
+    "recoge_en_finca": true,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  },
+  {
+    "id": "A12",
+    "nombre": "Enfriadero Susa",
+    "municipio": "Susa",
+    "latitud": 5.4561,
+    "longitud": -73.8249,
+    "precio_base_litro": 1760,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.4,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 35,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 15,
+    "recoge_en_finca": true,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  }
+];
+
+const MUNICIPIOS_COORDS = {
+  "Villa de San Diego de Ubaté": [5.3059, -73.8155],
+  "Lenguazaque": [5.3126, -73.7156],
+  "Guachetá": [5.3219, -73.6835],
+  "Cucunubá": [5.2571, -73.7664],
+  "Sutatausa": [5.2672, -73.8774],
+  "Tausa": [5.2019, -73.8974],
+  "Carmen de Carupa": [5.3406, -73.9086],
+  "Fúquene": [5.4067, -73.7652],
+  "Simijaca": [5.5083, -73.8437],
+  "Susa": [5.4544, -73.8231],
+};
+
+// ============================================================
+// Motor de cálculo (Eslabón 3) — puerto a JavaScript de src/modelo.py
+// ============================================================
+function haversineKm(lat1, lon1, lat2, lon2) {
+  const R = 6371.0;
+  const toRad = (d) => (d * Math.PI) / 180;
+  const dphi = toRad(lat2 - lat1);
+  const dlambda = toRad(lon2 - lon1);
+  const a = Math.sin(dphi / 2) ** 2 +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dlambda / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(Math.min(1, a)));
+}
+
+function bonificacionUfc(ufc, acopio) {
+  const t = acopio.bonificaciones_calidad.bonificacion_calidad_higienica_ufc_ml;
+  if (ufc <= 25000) return t["0_25000"];
+  if (ufc <= 100000) return t["25001_100000"];
+  if (ufc <= 300000) return t["100001_300000"];
+  return t["mas_300000"];
+}
+
+function precioFinalLitro(acopio, grasaPct, proteinaPct, solidosPct, ufc, grasaRef, proteinaRef, solidosRef) {
+  const bc = acopio.bonificaciones_calidad;
+  const dGrasa = grasaPct - grasaRef;
+  const dProteina = proteinaPct - proteinaRef;
+  const dSolidos = solidosPct - solidosRef;
+  const bono = dGrasa * 10 * bc.grasa_por_gramo +
+               dProteina * 10 * bc.proteina_por_gramo +
+               dSolidos * 10 * bc.solidos_totales_por_gramo +
+               bonificacionUfc(ufc, acopio);
+  return { precio: acopio.precio_base_litro + bono, bono };
+}
+
+function costoInsumosMensual(tienda, cant, distanciaKm, costoKm, viajesMes) {
+  const p = tienda.precios;
+  const bruto = cant.bultosConcentrado * p.concentrado_lechero_bulto_40kg +
+                cant.bultosSal * p.sal_mineralizada_bulto_40kg +
+                cant.unidadesAntiparasitario * p.antiparasitario_comun +
+                cant.unidadesAntibiotico * p.antibiotico_comun;
+  const totalBultos = cant.bultosConcentrado + cant.bultosSal;
+  let descuentoPct = 0;
+  if (totalBultos >= tienda.descuento_volumen.umbral_bultos) {
+    descuentoPct = tienda.descuento_volumen.porcentaje / 100;
+  }
+  const neto = bruto * (1 - descuentoPct);
+  const transporte = distanciaKm * 2 * costoKm * viajesMes;
+  return neto + transporte;
+}
+
+function costoEntregaLeche(acopio, distanciaKm, costoKm) {
+  if (acopio.recoge_en_finca) return 0;
+  const diasMes = acopio.frecuencia_recoleccion === "Diaria" ? 30 : 15;
+  return distanciaKm * 2 * costoKm * diasMes;
+}
+
+function calcularCombinaciones(params) {
+  const filas = [];
+  for (const tienda of TIENDAS) {
+    const dTienda = haversineKm(params.fincaLat, params.fincaLon, tienda.latitud, tienda.longitud);
+    const costoIns = costoInsumosMensual(tienda, params.cantidades, dTienda, params.costoKm, params.viajesMes);
+    for (const acopio of ACOPIOS) {
+      const dAcopio = haversineKm(params.fincaLat, params.fincaLon, acopio.latitud, acopio.longitud);
+      const factible = params.litrosDia >= acopio.volumen_minimo_litros_dia;
+      const { precio, bono } = precioFinalLitro(
+        acopio, params.grasaPct, params.proteinaPct, params.solidosPct, params.ufc,
+        params.grasaRef, params.proteinaRef, params.solidosRef
+      );
+      const ingreso = params.litrosDia * params.diasMes * precio;
+      const costoEntrega = costoEntregaLeche(acopio, dAcopio, params.costoKm);
+      const margen = ingreso - costoIns - costoEntrega;
+      filas.push({
+        tiendaId: tienda.id, tiendaNombre: tienda.nombre, tiendaMunicipio: tienda.municipio,
+        acopioId: acopio.id, acopioNombre: acopio.nombre, acopioMunicipio: acopio.municipio,
+        factible, volumenMinimo: acopio.volumen_minimo_litros_dia,
+        distanciaTienda: dTienda, distanciaAcopio: dAcopio,
+        precioFinalLitro: precio, bonificacionLitro: bono,
+        ingresoMensual: ingreso, costoInsumosMensual: costoIns, costoEntregaMensual: costoEntrega,
+        margenNetoMensual: margen, plazoPagoDias: acopio.plazo_pago_dias,
+        recogeEnFinca: acopio.recoge_en_finca,
+      });
+    }
+  }
+  return filas;
+}
+
+function elegirOptima(filas) {
+  const factibles = filas.filter((f) => f.factible).sort((a, b) => b.margenNetoMensual - a.margenNetoMensual);
+  if (factibles.length === 0) return { mejor: null, factibles };
+  const margenMax = factibles[0].margenNetoMensual;
+  const tolerancia = Math.max(20000, 0.01 * Math.abs(margenMax));
+  let empatados = factibles.filter((f) => Math.abs(margenMax - f.margenNetoMensual) < tolerancia);
+  let mejor = factibles[0];
+  if (empatados.length > 1) {
+    empatados = empatados.map((f) => ({ ...f, distanciaTotal: f.distanciaTienda + f.distanciaAcopio }));
+    empatados.sort((a, b) => {
+      if (a.plazoPagoDias !== b.plazoPagoDias) return a.plazoPagoDias - b.plazoPagoDias;
+      if (a.distanciaTotal !== b.distanciaTotal) return a.distanciaTotal - b.distanciaTotal;
+      return (b.recogeEnFinca ? 1 : 0) - (a.recogeEnFinca ? 1 : 0);
+    });
+    mejor = empatados[0];
+  }
+  return { mejor, factibles };
+}
+
+// ============================================================
+// Interfaz
+// ============================================================
+const fmtCOP = (n) => "$" + Math.round(n).toLocaleString("es-CO");
+
+const selMunicipio = document.getElementById("municipio");
+Object.keys(MUNICIPIOS_COORDS).forEach((m) => {
+  const opt = document.createElement("option");
+  opt.value = m; opt.textContent = m;
+  selMunicipio.appendChild(opt);
+});
+
+let mapaLeaflet = null;
+
+function construirMapa(fincaLatLon, tiendaOptimaId, acopioOptimoId) {
+  const contenedorMapa = document.getElementById("mapa");
+  if (!contenedorMapa) return;
+  if (mapaLeaflet) { mapaLeaflet.remove(); mapaLeaflet = null; }
+  const centro = fincaLatLon || [5.35, -73.82];
+  mapaLeaflet = L.map("mapa").setView(centro, 10);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; colaboradores de OpenStreetMap",
+    maxZoom: 18,
+  }).addTo(mapaLeaflet);
+
+  if (fincaLatLon) {
+    L.marker(fincaLatLon).addTo(mapaLeaflet).bindTooltip("Tu finca");
+  }
+  TIENDAS.forEach((t) => {
+    const color = t.id === tiendaOptimaId ? "green" : "blue";
+    L.circleMarker([t.latitud, t.longitud], { color, fillColor: color, fillOpacity: 0.85, radius: 8 })
+      .addTo(mapaLeaflet)
+      .bindTooltip(`🛒 ${t.nombre} (${t.municipio})`);
+  });
+  ACOPIOS.forEach((a) => {
+    const color = a.id === acopioOptimoId ? "green" : "orange";
+    L.circleMarker([a.latitud, a.longitud], { color, fillColor: color, fillOpacity: 0.85, radius: 8 })
+      .addTo(mapaLeaflet)
+      .bindTooltip(`🥛 ${a.nombre} (${a.municipio})`);
+  });
+}
+
+function renderizarMapaSeguro(fincaLatLon, tiendaOptimaId, acopioOptimoId) {
+  try {
+    construirMapa(fincaLatLon, tiendaOptimaId, acopioOptimoId);
+  } catch (e) {
+    const contenedor = document.getElementById("mapa-contenedor");
+    if (contenedor) {
+      contenedor.innerHTML =
+        '<div class="alerta alerta-advertencia">⚠️ No se pudo cargar el mapa (puede deberse a que no tienes conexión a internet en este momento, ya que el mapa usa imágenes de OpenStreetMap). El cálculo del margen y la tabla de resultados no se ven afectados.</div>';
+    }
+  }
+}
+
+function leerNumero(id) {
+  const el = document.getElementById(id);
+  const v = parseFloat(el.value);
+  return Number.isFinite(v) ? v : NaN;
+}
+
+document.getElementById("form-ganadero").addEventListener("submit", function (ev) {
+  ev.preventDefault();
+  const salida = document.getElementById("salida");
+  salida.innerHTML = "";
+
+  // Validación defensiva adicional (los atributos min/max/required del HTML
+  // ya bloquean texto, vacíos y fuera de rango en el navegador).
+  const campos = [
+    "litros_dia", "dias_mes", "grasa_pct", "proteina_pct", "solidos_pct", "ufc",
+    "bultos_concentrado", "bultos_sal", "unidades_antiparasitario", "unidades_antibiotico",
+    "viajes_tienda_mes", "costo_por_km", "grasa_ref", "proteina_ref", "solidos_ref",
+  ];
+  const valores = {};
+  for (const c of campos) {
+    valores[c] = leerNumero(c);
+    if (Number.isNaN(valores[c])) {
+      salida.innerHTML = `<div class="alerta alerta-error">⚠️ El campo "${c.replace(/_/g, " ")}" no tiene un valor numérico válido. Corrígelo e intenta de nuevo.</div>`;
+      return;
+    }
+  }
+
+  const municipio = selMunicipio.value;
+  const [fincaLat, fincaLon] = MUNICIPIOS_COORDS[municipio];
+
+  let avisoComposicion = "";
+  if (valores.grasa_pct + valores.proteina_pct > valores.solidos_pct) {
+    avisoComposicion =
+      `<div class="alerta alerta-advertencia">⚠️ Revisa los porcentajes de calidad: la grasa más la proteína ` +
+      `(${(valores.grasa_pct + valores.proteina_pct).toFixed(1)}%) superan los sólidos totales que ingresaste ` +
+      `(${valores.solidos_pct.toFixed(1)}%), lo cual no es físicamente posible en la leche (los sólidos totales ` +
+      `incluyen la grasa y la proteína, más lactosa y minerales). El cálculo continúa con los valores ingresados, ` +
+      `pero corrígelos si fue un error de digitación.</div>`;
+  }
+
+  const cantidades = {
+    bultosConcentrado: valores.bultos_concentrado,
+    bultosSal: valores.bultos_sal,
+    unidadesAntiparasitario: valores.unidades_antiparasitario,
+    unidadesAntibiotico: valores.unidades_antibiotico,
+  };
+
+  const filas = calcularCombinaciones({
+    fincaLat, fincaLon,
+    litrosDia: valores.litros_dia, diasMes: valores.dias_mes,
+    grasaPct: valores.grasa_pct, proteinaPct: valores.proteina_pct, solidosPct: valores.solidos_pct,
+    ufc: valores.ufc, cantidades, viajesMes: valores.viajes_tienda_mes, costoKm: valores.costo_por_km,
+    grasaRef: valores.grasa_ref, proteinaRef: valores.proteina_ref, solidosRef: valores.solidos_ref,
+  });
+  const { mejor, factibles } = elegirOptima(filas);
+
+  if (!mejor) {
+    const minVol = Math.min(...ACOPIOS.map((a) => a.volumen_minimo_litros_dia));
+    const acopioMin = ACOPIOS.find((a) => a.volumen_minimo_litros_dia === minVol).nombre;
+    salida.innerHTML = avisoComposicion + `
+      <div class="alerta alerta-error">
+        Con tu producción actual de ${valores.litros_dia.toFixed(0)} L/día, ningún centro de acopio de la región
+        la acepta directamente. El volumen mínimo más bajo disponible es ${minVol.toFixed(0)} L/día, en
+        <strong>${acopioMin}</strong>. Te faltan ${(minVol - valores.litros_dia).toFixed(0)} L/día.
+        Considera asociarte con otros productores de tu vereda para alcanzar el mínimo.
+      </div>`;
+    return;
+  }
+
+  const peor = factibles.reduce((a, b) => (a.margenNetoMensual < b.margenNetoMensual ? a : b));
+  const promedio = factibles.reduce((s, f) => s + f.margenNetoMensual, 0) / factibles.length;
+  const noFactibles = [...new Map(filas.filter((f) => !f.factible).map((f) => [f.acopioId, f])).values()];
+
+  const filasTabla = [...factibles]
+    .sort((a, b) => b.margenNetoMensual - a.margenNetoMensual)
+    .map((f) => `
+      <tr>
+        <td>${f.tiendaNombre}</td>
+        <td>${f.acopioNombre}</td>
+        <td>${f.distanciaTienda.toFixed(1)}</td>
+        <td>${f.distanciaAcopio.toFixed(1)}</td>
+        <td>${fmtCOP(f.precioFinalLitro)}</td>
+        <td>${fmtCOP(f.ingresoMensual)}</td>
+        <td>${fmtCOP(f.costoInsumosMensual)}</td>
+        <td>${fmtCOP(f.costoEntregaMensual)}</td>
+        <td><strong>${fmtCOP(f.margenNetoMensual)}</strong></td>
+        <td>${f.plazoPagoDias}</td>
+      </tr>`)
+    .join("");
+
+  const listaNoFactibles = noFactibles
+    .map((f) => `<li><strong>${f.acopioNombre}</strong> exige mínimo ${f.volumenMinimo.toFixed(0)} L/día (te faltan ${(f.volumenMinimo - valores.litros_dia).toFixed(0)} L/día)</li>`)
+    .join("");
+
+  salida.innerHTML = `
+    ${avisoComposicion}
+    <div class="alerta alerta-exito">
+      <strong>Combinación óptima:</strong> compra insumos en <strong>${mejor.tiendaNombre}</strong>
+      (${mejor.tiendaMunicipio}) y vende tu leche en <strong>${mejor.acopioNombre}</strong> (${mejor.acopioMunicipio}).
+    </div>
+    <div class="metricas">
+      <div class="metrica"><div class="etiqueta">Margen neto mensual</div><div class="valor">${fmtCOP(mejor.margenNetoMensual)}</div></div>
+      <div class="metrica"><div class="etiqueta">Ingreso mensual</div><div class="valor">${fmtCOP(mejor.ingresoMensual)}</div></div>
+      <div class="metrica"><div class="etiqueta">Costo insumos + entrega</div><div class="valor">${fmtCOP(mejor.costoInsumosMensual + mejor.costoEntregaMensual)}</div></div>
+      <div class="metrica"><div class="etiqueta">Vs. la peor opción viable</div><div class="valor">+${fmtCOP(mejor.margenNetoMensual - peor.margenNetoMensual)}/mes</div></div>
+      <div class="metrica"><div class="etiqueta">Vs. el promedio de la región</div><div class="valor">+${fmtCOP(mejor.margenNetoMensual - promedio)}/mes</div></div>
+    </div>
+
+    <div class="tarjeta">
+      <h2>Todas las combinaciones factibles, ordenadas por margen neto</h2>
+      <div class="tabla-scroll">
+        <table>
+          <thead><tr>
+            <th>Tienda de insumos</th><th>Centro de acopio</th><th>Dist. tienda (km)</th><th>Dist. acopio (km)</th>
+            <th>Precio/L</th><th>Ingreso/mes</th><th>Costo insumos/mes</th><th>Costo entrega/mes</th>
+            <th>Margen neto/mes</th><th>Plazo pago (días)</th>
+          </tr></thead>
+          <tbody>${filasTabla}</tbody>
+        </table>
+      </div>
+      ${noFactibles.length ? `
+        <details style="margin-top:16px;">
+          <summary>⚠️ ${noFactibles.length} centro(s) de acopio no disponibles por volumen mínimo</summary>
+          <ul>${listaNoFactibles}</ul>
+        </details>` : ""}
+    </div>
+
+    <div class="tarjeta" id="mapa-contenedor">
+      <h2>Mapa de la región</h2>
+      <div id="mapa"></div>
+    </div>
+  `;
+
+  renderizarMapaSeguro([fincaLat, fincaLon], mejor.tiendaId, mejor.acopioId);
+});
+
+// Mapa inicial (antes de calcular), con manejo de fallo.
+window.addEventListener("DOMContentLoaded", () => {
+  const salida = document.getElementById("salida");
+  salida.innerHTML = `
+    <div class="alerta alerta-exito" style="background:#eef3fb;color:#25518c;border-color:#c9dbf3;">
+      Completa el formulario y presiona <strong>Calcular la mejor combinación</strong> para ver tu resultado.
+    </div>
+    <div class="tarjeta" id="mapa-contenedor">
+      <h2>Mapa de establecimientos en la provincia de Ubaté</h2>
+      <div id="mapa"></div>
+    </div>`;
+  renderizarMapaSeguro(null, null, null);
+});
+</script>
+</body>
+</html>

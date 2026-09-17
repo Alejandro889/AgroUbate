@@ -7,23 +7,46 @@ que maximiza su margen neto mensual.
 Construido con Python + Streamlit. Corre 100% en local, sin servicios pagos ni
 claves de API obligatorias.
 
+**Hay dos formas de verlo funcionar:**
+
+1. **`agroubate.html`** — versión de un solo archivo, sin instalar nada. Haz doble
+   clic y se abre en tu navegador. Tiene el mismo formulario, el mismo motor de
+   cálculo (portado a JavaScript) y el mismo mapa, con los datos ya incluidos
+   dentro del archivo. Ideal para verla rápido o mostrarla sin configurar un entorno.
+2. **`app.py`** (Streamlit) — la versión completa del proyecto, con el código en
+   Python tal como se documentó en los Eslabones 1 a 6. Requiere instalar
+   dependencias (ver abajo).
+
 ## Estructura de carpetas
 
 ```
 AgroUbate/
-├── app.py                 # Interfaz Streamlit (formulario, resultados, mapa)
-├── requirements.txt       # Dependencias del proyecto
+├── agroubate.html          # Versión de un solo archivo (abrir con doble clic)
+├── app.py                  # Interfaz Streamlit (formulario, resultados, mapa)
+├── requirements.txt        # Dependencias del proyecto (para app.py)
 ├── src/
-│   ├── datos.py            # Carga de datos y coordenadas de municipios
-│   └── modelo.py           # Fórmulas económicas (Eslabón 3)
+│   ├── datos.py             # Carga de datos y coordenadas de municipios
+│   └── modelo.py            # Fórmulas económicas (Eslabón 3)
 ├── data/
 │   ├── tiendas_insumos.json
 │   ├── centros_acopio.json
-│   └── fuentes.md           # Citas de las fuentes reales usadas
-├── docs/                    # Entregables de cada eslabón del proceso
-├── bitacora_prompts.md      # Bitácora de prompts (entregable académico)
-└── registro_errores.md      # Registro de errores (entregable académico)
+│   └── fuentes.md            # Citas de las fuentes reales usadas
+├── docs/                     # Entregables de cada eslabón del proceso
+├── bitacora_prompts.md       # Bitácora de prompts (entregable académico)
+└── registro_errores.md       # Registro de errores (entregable académico)
 ```
+
+## Opción rápida: `agroubate.html`
+
+1. Descarga o clona el repositorio.
+2. Haz doble clic en `agroubate.html` (o ábrelo con "Abrir con → tu navegador").
+3. Completa el formulario y presiona **Calcular la mejor combinación**.
+
+Necesitas internet solo para que carguen la librería del mapa (Leaflet, vía CDN)
+y las imágenes de OpenStreetMap; el cálculo funciona igual sin conexión, y si el
+mapa no carga verás un aviso claro en vez de un error, sin que se rompa el resto
+de la página. Los datos de tiendas y centros de acopio están embebidos dentro
+del propio archivo HTML, por eso no hace falta ningún servidor local.
 
 ## Requisitos
 

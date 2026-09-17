@@ -94,4 +94,14 @@ Registro cronológico de cada prompt recibido y cada respuesta entregada durante
 
 ---
 
+## Entrada 10
+
+- **Eslabón:** post-cierre (solicitud adicional del usuario)
+- **Técnica aplicada:** Prompt chaining (reutiliza el dataset del Eslabón 2 y las fórmulas del Eslabón 3, portadas a otro lenguaje)
+- **Objetivo del prompt:** El usuario pidió un archivo HTML para poder ejecutar y ver el aplicativo web directamente, sin instalar Python/Streamlit.
+- **Resultado obtenido:** Se creó `agroubate.html`, un archivo único y autocontenido que embebe los datos de `data/tiendas_insumos.json` y `data/centros_acopio.json` directamente en el HTML (para evitar bloqueos de CORS al usar `fetch()` sobre `file://`), y reimplementa en JavaScript puro el motor de cálculo de `src/modelo.py` (Haversine, precio final por litro con esquema marginal, costo de insumos, costo de entrega, margen neto, reglas de desempate). Se probó abriendo el archivo directamente con Playwright (`file://`): el cálculo arrojó exactamente los mismos resultados que la app Streamlit para el mismo caso de prueba ($5.075.331 de margen neto mensual), sin errores de JavaScript en consola. El mapa (Leaflet vía CDN + OpenStreetMap) no pudo cargar en el entorno de pruebas por la misma restricción de red del sandbox ya documentada en el Eslabón 6; se confirmó que el `try/catch` alrededor de la construcción del mapa muestra la advertencia en español en vez de romper la página.
+- **Decisión tomada:** El usuario pidió además hacer commit y push de todo al repositorio `github.com/Alejandro889/AgroUbate` para poder ejecutarlo desde ahí; se actualizó `README.md` explicando las dos formas de ejecutar el proyecto (HTML de un solo archivo vs. app Streamlit completa) y se subió todo a la rama de trabajo.
+
+---
+
 <!-- Se añade una nueva entrada al cerrar cada eslabón (cuando el usuario escriba "aprobado" o equivalente) y cada vez que el usuario reporte un error o dé retroalimentación relevante. -->
