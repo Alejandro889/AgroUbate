@@ -1,0 +1,200 @@
+[
+  {
+    "id": "T01",
+    "nombre": "Cooperativa Agropecuaria del Valle de Ubaté",
+    "municipio": "Villa de San Diego de Ubaté",
+    "direccion": "Calle 7 # 9-85, Ubaté",
+    "latitud": 5.3062,
+    "longitud": -73.8149,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 96500,
+      "sal_mineralizada_bulto_40kg": 98000,
+      "antiparasitario_comun": 34000,
+      "antibiotico_comun": 42000
+    },
+    "descuento_volumen": { "umbral_bultos": 15, "porcentaje": 5 },
+    "horario": "Lunes a sábado 7:00 a.m. - 5:00 p.m.",
+    "fuente": "REAL",
+    "fuente_cita": "Nombre, municipio y dirección verificados en directorio empresarial (informacolombia.com / einforma.co, búsqueda 2026). Precios y condiciones comerciales: ESTIMADOS a partir de referencias reales de mercado (ver data/fuentes.md)."
+  },
+  {
+    "id": "T02",
+    "nombre": "Serviagrofinca - Punto de venta Ubaté",
+    "municipio": "Villa de San Diego de Ubaté",
+    "direccion": "Zona urbana, vía a Chiquinquirá, Ubaté",
+    "latitud": 5.3021,
+    "longitud": -73.8187,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 99500,
+      "sal_mineralizada_bulto_40kg": 104000,
+      "antiparasitario_comun": 38500,
+      "antibiotico_comun": 45000
+    },
+    "descuento_volumen": { "umbral_bultos": 20, "porcentaje": 7 },
+    "horario": "Lunes a sábado 7:30 a.m. - 5:30 p.m.",
+    "fuente": "REAL",
+    "fuente_cita": "Serviagrofinca (empresa matriz en Chiquinquirá, Boyacá) confirma tener punto de venta en Ubaté (serviagrofinca.com, búsqueda 2026). Dirección exacta del local no publicada: ESTIMADA. Precios: ESTIMADOS (ver data/fuentes.md)."
+  },
+  {
+    "id": "T03",
+    "nombre": "COOPALAC - Cooperativa de Productores Agropecuarios de Lenguazaque",
+    "municipio": "Lenguazaque",
+    "direccion": "Carrera 5 # 2-09, Lenguazaque Centro",
+    "latitud": 5.3129,
+    "longitud": -73.7159,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 97800,
+      "sal_mineralizada_bulto_40kg": 101000,
+      "antiparasitario_comun": 36000,
+      "antibiotico_comun": 43500
+    },
+    "descuento_volumen": { "umbral_bultos": 10, "porcentaje": 4 },
+    "horario": "Lunes a viernes 8:00 a.m. - 12:00 m. y 2:00 p.m. - 5:00 p.m.; sábados 8:00 a.m. - 1:00 p.m.",
+    "fuente": "REAL",
+    "fuente_cita": "Nombre, municipio, dirección y teléfono (320 963 0180) verificados en directorio empresarial (einforma.co / empresite, búsqueda 2026). Precios y condiciones comerciales: ESTIMADOS (ver data/fuentes.md)."
+  },
+  {
+    "id": "T04",
+    "nombre": "Serviagrofinca - Punto de venta Simijaca",
+    "municipio": "Simijaca",
+    "direccion": "Zona urbana, Simijaca",
+    "latitud": 5.5091,
+    "longitud": -73.8459,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 98800,
+      "sal_mineralizada_bulto_40kg": 103500,
+      "antiparasitario_comun": 37000,
+      "antibiotico_comun": 44000
+    },
+    "descuento_volumen": { "umbral_bultos": 20, "porcentaje": 7 },
+    "horario": "Lunes a sábado 7:30 a.m. - 5:30 p.m.",
+    "fuente": "REAL",
+    "fuente_cita": "Serviagrofinca confirma punto de venta en Simijaca (serviagrofinca.com, búsqueda 2026). Dirección exacta no publicada: ESTIMADA. Precios: ESTIMADOS (ver data/fuentes.md)."
+  },
+  {
+    "id": "T05",
+    "nombre": "Contrigran (planta y venta directa de sal mineralizada)",
+    "municipio": "Cucunubá",
+    "direccion": "Kilómetro 1, vía Ubaté - Cucunubá",
+    "latitud": 5.2601,
+    "longitud": -73.7802,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 101000,
+      "sal_mineralizada_bulto_40kg": 94500,
+      "antiparasitario_comun": 39000,
+      "antibiotico_comun": 46000
+    },
+    "descuento_volumen": { "umbral_bultos": 25, "porcentaje": 8 },
+    "horario": "Lunes a viernes 7:00 a.m. - 5:00 p.m.",
+    "fuente": "REAL",
+    "fuente_cita": "Contrigran fabrica y comercializa la línea 'Sal Bovimex leche Ubaté' desde su planta en Km 1 vía Ubaté-Cucunubá (contrigran.co, búsqueda 2026). El precio de la sal mineralizada usa como referencia real el rango de mercado citado en data/fuentes.md; el resto de precios y condiciones: ESTIMADOS."
+  },
+  {
+    "id": "T06",
+    "nombre": "Agroinsumos El Páramo",
+    "municipio": "Guachetá",
+    "direccion": "Carrera 4 # 3-20, Guachetá",
+    "latitud": 5.3224,
+    "longitud": -73.6839,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 95000,
+      "sal_mineralizada_bulto_40kg": 97500,
+      "antiparasitario_comun": 33000,
+      "antibiotico_comun": 41000
+    },
+    "descuento_volumen": { "umbral_bultos": 12, "porcentaje": 5 },
+    "horario": "Lunes a sábado 7:00 a.m. - 5:00 p.m.",
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo (no corresponde a un negocio verificado)."
+  },
+  {
+    "id": "T07",
+    "nombre": "Almacén Agropecuario Sutatausa",
+    "municipio": "Sutatausa",
+    "direccion": "Calle Principal # 2-15, Sutatausa",
+    "latitud": 5.2676,
+    "longitud": -73.8779,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 97000,
+      "sal_mineralizada_bulto_40kg": 100000,
+      "antiparasitario_comun": 35000,
+      "antibiotico_comun": 43000
+    },
+    "descuento_volumen": { "umbral_bultos": 15, "porcentaje": 6 },
+    "horario": "Lunes a sábado 8:00 a.m. - 5:00 p.m.",
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo (no corresponde a un negocio verificado)."
+  },
+  {
+    "id": "T08",
+    "nombre": "Agropecuaria La Laguna",
+    "municipio": "Tausa",
+    "direccion": "Carrera 3 # 4-10, Tausa",
+    "latitud": 5.2023,
+    "longitud": -73.8978,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 99000,
+      "sal_mineralizada_bulto_40kg": 102000,
+      "antiparasitario_comun": 36500,
+      "antibiotico_comun": 44500
+    },
+    "descuento_volumen": { "umbral_bultos": 15, "porcentaje": 5 },
+    "horario": "Lunes a sábado 7:30 a.m. - 5:00 p.m.",
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo (no corresponde a un negocio verificado)."
+  },
+  {
+    "id": "T09",
+    "nombre": "Insumos Agrícolas Carupa",
+    "municipio": "Carmen de Carupa",
+    "direccion": "Calle 5 # 3-08, Carmen de Carupa",
+    "latitud": 5.341,
+    "longitud": -73.909,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 100000,
+      "sal_mineralizada_bulto_40kg": 103000,
+      "antiparasitario_comun": 37500,
+      "antibiotico_comun": 45500
+    },
+    "descuento_volumen": { "umbral_bultos": 10, "porcentaje": 4 },
+    "horario": "Lunes a sábado 8:00 a.m. - 5:00 p.m.",
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo (no corresponde a un negocio verificado)."
+  },
+  {
+    "id": "T10",
+    "nombre": "Agroinsumos Fúquene",
+    "municipio": "Fúquene",
+    "direccion": "Carrera 6 # 4-22, Fúquene",
+    "latitud": 5.407,
+    "longitud": -73.7656,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 96000,
+      "sal_mineralizada_bulto_40kg": 99500,
+      "antiparasitario_comun": 34500,
+      "antibiotico_comun": 42500
+    },
+    "descuento_volumen": { "umbral_bultos": 12, "porcentaje": 5 },
+    "horario": "Lunes a sábado 7:00 a.m. - 5:00 p.m.",
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo (no corresponde a un negocio verificado)."
+  },
+  {
+    "id": "T11",
+    "nombre": "Almacén Ganadero Susa",
+    "municipio": "Susa",
+    "direccion": "Calle 4 # 5-16, Susa",
+    "latitud": 5.4547,
+    "longitud": -73.8234,
+    "precios": {
+      "concentrado_lechero_bulto_40kg": 98000,
+      "sal_mineralizada_bulto_40kg": 101500,
+      "antiparasitario_comun": 36000,
+      "antibiotico_comun": 44000
+    },
+    "descuento_volumen": { "umbral_bultos": 15, "porcentaje": 6 },
+    "horario": "Lunes a sábado 7:30 a.m. - 5:00 p.m.",
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo (no corresponde a un negocio verificado)."
+  }
+]

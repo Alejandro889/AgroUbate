@@ -24,4 +24,24 @@ Registro cronológico de cada prompt recibido y cada respuesta entregada durante
 
 ---
 
+## Entrada 3
+
+- **Eslabón:** 1 → 2 (cierre formal del Eslabón 1)
+- **Técnica aplicada:** Prompt chaining (transición de fase)
+- **Objetivo del prompt:** El usuario escribió "continua", que se interpreta como confirmación equivalente a "aprobado" para el Eslabón 1, dado que ya había respondido conforme a las 3 preguntas de validación sin objeciones ni solicitudes de cambio.
+- **Resultado obtenido:** Se cierra el Eslabón 1 con el stack definitivo: Streamlit (Python) + pandas + streamlit-folium/Leaflet + JSON/CSV. Se inicia el Eslabón 2 (datos de la región): investigación de centros de acopio de leche y tiendas de insumos agropecuarios en la provincia de Ubaté.
+- **Decisión tomada:** Avanzar al Eslabón 2 aplicando prompt chaining (la salida de este eslabón — el stack aprobado — es insumo para construir el dataset y, luego, la app). Se usará búsqueda web para maximizar la proporción de datos REALES antes de recurrir a datos SIMULADOS, respetando la regla de honestidad de datos.
+
+---
+
+## Entrada 4
+
+- **Eslabón:** 2 (datos de la región)
+- **Técnica aplicada:** Prompt chaining (la salida del Eslabón 1 — Streamlit/Python/JSON — define el formato de datos usado) + cadena de pensamiento (para decidir qué buscar y cómo clasificar REAL vs. SIMULADO antes de escribir el dataset)
+- **Objetivo del prompt:** Construir el dataset base de tiendas de insumos agropecuarios y centros de acopio de leche en la provincia de Ubaté, aplicando la regla de honestidad de datos.
+- **Resultado obtenido:** Se realizaron 12 búsquedas web dirigidas y se identificaron 9 establecimientos/organizaciones reales verificables (Doña Leche Alimentos S.A., Lácteos Villa de Ubaté, Federación de Productores Lecheros de la Provincia de Ubaté, Alquería, Cooperativa Agropecuaria del Valle de Ubaté, COOPALAC, Serviagrofinca en Ubaté y Simijaca, Contrigran), además de la tabla oficial vigente de bonificaciones por calidad de leche (Resolución 017 de 2012 actualizada, Minagricultura, Región 1) y referencias reales de precios de mercado (Solla, Italcol, Finca, Agroforr, Lares, Vecol). Se generaron `data/tiendas_insumos.json` (11 registros: 5 reales, 6 simulados), `data/centros_acopio.json` (12 registros: 4 reales, 8 simulados) y `data/fuentes.md` con la cita exacta de cada fuente real y la aclaración de qué campos son estimaciones incluso dentro de los registros reales.
+- **Decisión tomada:** Etiquetar el campo `fuente` de cada registro únicamente respecto a la existencia/ubicación del establecimiento (nunca respecto a precios comerciales específicos, que siempre son estimados por no ser información pública), y dejarlo explícito en `fuentes.md` para no presentar ningún dato simulado como si fuera real. Se presenta el entregable con el resumen de proporciones (39,1% real / 60,9% simulado combinado) y se solicitan las 3 preguntas de validación del Eslabón 2 antes de cerrarlo.
+
+---
+
 <!-- Se añade una nueva entrada al cerrar cada eslabón (cuando el usuario escriba "aprobado" o equivalente) y cada vez que el usuario reporte un error o dé retroalimentación relevante. -->

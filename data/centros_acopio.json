@@ -1,0 +1,302 @@
+[
+  {
+    "id": "A01",
+    "nombre": "Doña Leche Alimentos S.A. (Acopio de Leche Ubaté)",
+    "municipio": "Villa de San Diego de Ubaté",
+    "latitud": 5.3115,
+    "longitud": -73.8072,
+    "precio_base_litro": 1780,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.40,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 150,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 30,
+    "recoge_en_finca": true,
+    "fuente": "REAL",
+    "fuente_cita": "Empresa, municipio y planta de enfriamiento ('Acopio de Leche Ubaté', construida en 1984) verificados en donaleche.com y directorios empresariales, búsqueda 2026. Bonificaciones por proteína/grasa/sólidos totales y por UFC: REALES, Resolución 017 de 2012 actualizada, Región 1 (Trópico Alto - incluye Cundinamarca), vigente marzo 2025 - febrero 2026 (minagricultura.gov.co). Precio base por litro, volumen mínimo, frecuencia, plazo de pago y coordenadas exactas: ESTIMADOS (ver data/fuentes.md)."
+  },
+  {
+    "id": "A02",
+    "nombre": "Lácteos Villa de Ubaté",
+    "municipio": "Villa de San Diego de Ubaté",
+    "latitud": 5.2841,
+    "longitud": -73.7961,
+    "precio_base_litro": 1750,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.40,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 60,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 15,
+    "recoge_en_finca": true,
+    "fuente": "REAL",
+    "fuente_cita": "Empresa, ubicación (Km 5 vía Ubaté-Chiquinquirá, sector Puente del Río) y teléfono verificados en lacteosvilladeubate.com y directorios, búsqueda 2026. Bonificaciones por componente: REALES (misma fuente que A01). Precio base, volumen mínimo, frecuencia, plazo de pago: ESTIMADOS."
+  },
+  {
+    "id": "A03",
+    "nombre": "Federación de Productores Lecheros Provincia de Ubaté y Áreas Circunvecinas (centro de acopio asociativo)",
+    "municipio": "Villa de San Diego de Ubaté",
+    "latitud": 5.3068,
+    "longitud": -73.8161,
+    "precio_base_litro": 1820,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.40,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 30,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 10,
+    "recoge_en_finca": false,
+    "fuente": "REAL",
+    "fuente_cita": "Organización, dirección (Cra 5 # 14A-21, Ubaté) y teléfono (311 514 2155) verificados en directorio empresarial, búsqueda 2026. Al ser una asociación de pequeños productores, opera con volumen mínimo bajo y exige entrega en el punto de acopio (no recoge en finca): supuesto operativo razonado, no verificado literalmente. Bonificaciones por componente: REALES (misma fuente que A01). Precio base, plazo de pago: ESTIMADOS."
+  },
+  {
+    "id": "A04",
+    "nombre": "Alquería (punto de acopio regional)",
+    "municipio": "Simijaca",
+    "latitud": 5.5065,
+    "longitud": -73.8412,
+    "precio_base_litro": 1800,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.40,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 200,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 45,
+    "recoge_en_finca": true,
+    "fuente": "REAL",
+    "fuente_cita": "Presencia de Alquería como comprador industrial en la cuenca lechera Ubaté-Chiquinquirá-Simijaca confirmada en prensa especializada (CONtexto Ganadero, La República, búsqueda 2026). Dirección exacta de la instalación de acopio en Simijaca no publicada: coordenadas y demás condiciones comerciales ESTIMADAS (ver data/fuentes.md). Plazo de pago de 45 días refleja quejas reportadas en prensa sobre plazos largos de la industria; el valor exacto es una estimación."
+  },
+  {
+    "id": "A05",
+    "nombre": "Centro de Acopio Lenguazaque",
+    "municipio": "Lenguazaque",
+    "latitud": 5.3118,
+    "longitud": -73.7148,
+    "precio_base_litro": 1740,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.40,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 40,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 15,
+    "recoge_en_finca": true,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01), aplicadas por ubicarse en la Región 1 del sistema de pago por calidad."
+  },
+  {
+    "id": "A06",
+    "nombre": "Cooperativa Lechera Guachetá",
+    "municipio": "Guachetá",
+    "latitud": 5.3231,
+    "longitud": -73.6822,
+    "precio_base_litro": 1730,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.40,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 35,
+    "frecuencia_recoleccion": "Interdiaria",
+    "plazo_pago_dias": 15,
+    "recoge_en_finca": false,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  },
+  {
+    "id": "A07",
+    "nombre": "Centro de Acopio Cucunubá",
+    "municipio": "Cucunubá",
+    "latitud": 5.2565,
+    "longitud": -73.7679,
+    "precio_base_litro": 1745,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.40,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 40,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 15,
+    "recoge_en_finca": true,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  },
+  {
+    "id": "A08",
+    "nombre": "Enfriadero Sutatausa",
+    "municipio": "Sutatausa",
+    "latitud": 5.2688,
+    "longitud": -73.8791,
+    "precio_base_litro": 1720,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.40,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 30,
+    "frecuencia_recoleccion": "Interdiaria",
+    "plazo_pago_dias": 20,
+    "recoge_en_finca": false,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  },
+  {
+    "id": "A09",
+    "nombre": "Centro de Acopio Tausa",
+    "municipio": "Tausa",
+    "latitud": 5.2035,
+    "longitud": -73.8991,
+    "precio_base_litro": 1710,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.40,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 30,
+    "frecuencia_recoleccion": "Interdiaria",
+    "plazo_pago_dias": 20,
+    "recoge_en_finca": false,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  },
+  {
+    "id": "A10",
+    "nombre": "Cooperativa Lechera Carmen de Carupa",
+    "municipio": "Carmen de Carupa",
+    "latitud": 5.3422,
+    "longitud": -73.9103,
+    "precio_base_litro": 1705,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.40,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 25,
+    "frecuencia_recoleccion": "Interdiaria",
+    "plazo_pago_dias": 20,
+    "recoge_en_finca": false,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  },
+  {
+    "id": "A11",
+    "nombre": "Centro de Acopio Fúquene",
+    "municipio": "Fúquene",
+    "latitud": 5.4082,
+    "longitud": -73.7638,
+    "precio_base_litro": 1755,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.40,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 35,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 15,
+    "recoge_en_finca": true,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  },
+  {
+    "id": "A12",
+    "nombre": "Enfriadero Susa",
+    "municipio": "Susa",
+    "latitud": 5.4561,
+    "longitud": -73.8249,
+    "precio_base_litro": 1760,
+    "bonificaciones_calidad": {
+      "proteina_por_gramo": 43.22,
+      "grasa_por_gramo": 14.40,
+      "solidos_totales_por_gramo": 15.28,
+      "bonificacion_calidad_higienica_ufc_ml": {
+        "0_25000": 174,
+        "25001_100000": 120,
+        "100001_300000": 60,
+        "mas_300000": 0
+      }
+    },
+    "volumen_minimo_litros_dia": 35,
+    "frecuencia_recoleccion": "Diaria",
+    "plazo_pago_dias": 15,
+    "recoge_en_finca": true,
+    "fuente": "SIMULADO",
+    "fuente_cita": "Registro generado de forma realista para completar la cobertura geográfica del modelo. Bonificaciones por componente: REALES (misma fuente que A01)."
+  }
+]
