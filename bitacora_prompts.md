@@ -64,4 +64,24 @@ Registro cronológico de cada prompt recibido y cada respuesta entregada durante
 
 ---
 
+## Entrada 7
+
+- **Eslabón:** 3 → 4
+- **Técnica aplicada:** Prompt chaining (cierre y transición de fase)
+- **Objetivo del prompt:** El usuario respondió "si, continua" a las 4 preguntas de validación del Eslabón 3 (transporte por distancia real, plazo de pago informativo, perfil de 80 L/día, composición de referencia estimada), interpretado como aprobación.
+- **Resultado obtenido:** Se cierra el Eslabón 3. Se inicia el Eslabón 4 (construcción del aplicativo) usando el stack del Eslabón 1 (Streamlit), el dataset del Eslabón 2 y las fórmulas del Eslabón 3 como insumos directos.
+- **Decisión tomada:** Avanzar al Eslabón 4 (prompt chaining) integrando los tres eslabones anteriores en código funcional.
+
+---
+
+## Entrada 8
+
+- **Eslabón:** 4 (construcción del aplicativo)
+- **Técnica aplicada:** Prompt chaining (integra Eslabones 1, 2 y 3)
+- **Objetivo del prompt:** Construir el aplicativo Streamlit completo: formulario de entrada, motor de cálculo, tabla de resultados, comparativo vs. peor opción y promedio, y mapa geográfico.
+- **Resultado obtenido:** Se crearon `app.py`, `src/datos.py`, `src/modelo.py`, `requirements.txt`, `.gitignore` y `README.md`. Se instalaron las dependencias en un entorno virtual y se verificó el motor de cálculo con pruebas directas en Python (132 combinaciones para el ejemplo de 80 L/día en Cucunubá, 110 factibles; caso de 5 L/día correctamente detectado como "ningún acopio factible"). Se levantó el servidor Streamlit y se probó la interfaz con Playwright + Chromium: el formulario, el resultado con métricas, la tabla ordenable y el mapa (componente `streamlit_folium.st_folium`) se renderizan sin errores en pantalla. Las teselas del mapa (OpenStreetMap) no cargaron en este entorno de pruebas por restricciones de red del sandbox (proxy de egreso bloquea el dominio de teselas), lo cual no es un error del aplicativo: en el computador real del usuario, con internet sin restricciones, cargarán con normalidad. Este punto queda anotado para reforzarse como caso de "fallo de carga del mapa" en el Eslabón 5.
+- **Decisión tomada:** Presentar el entregable con capturas de pantalla y solicitar las 3 preguntas de validación del Eslabón 4 antes de cerrarlo.
+
+---
+
 <!-- Se añade una nueva entrada al cerrar cada eslabón (cuando el usuario escriba "aprobado" o equivalente) y cada vez que el usuario reporte un error o dé retroalimentación relevante. -->
