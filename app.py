@@ -7,7 +7,7 @@ import pandas as pd
 import streamlit as st
 from streamlit_folium import st_folium
 
-from src.datos import MUNICIPIOS_COORDS, cargar_acopios, cargar_tiendas
+from src.datos import DatosInvalidosError, MUNICIPIOS_COORDS, cargar_acopios, cargar_tiendas
 from src.modelo import calcular_combinaciones, elegir_optima
 
 st.set_page_config(page_title="AgroUbaté AI", page_icon="🐄", layout="wide")
@@ -56,8 +56,15 @@ st.caption(
 
 try:
     tiendas_df, acopios_df = obtener_datos()
-except FileNotFoundError as e:
-    st.error(f"No se pudieron cargar los datos del aplicativo: {e}")
+except DatosInvalidosError as e:
+    st.error(f"⚠️ No se pudo iniciar el aplicativo: {e}")
+    st.stop()
+except Exception:
+    st.error(
+        "⚠️ Ocurrió un problema inesperado leyendo los datos del aplicativo. "
+        "Verifica que la carpeta 'data' esté completa y no haya sido modificada, "
+        "y vuelve a intentarlo."
+    )
     st.stop()
 
 with st.form("formulario_ganadero"):
@@ -112,6 +119,15 @@ with st.form("formulario_ganadero"):
         )
 
     enviado = st.form_submit_button("Calcular la mejor combinación", use_container_width=True)
+
+if enviado and (grasa_pct + proteina_pct) > solidos_pct:
+    st.warning(
+        "⚠️ Revisa los porcentajes de calidad: la grasa más la proteína "
+        f"({grasa_pct + proteina_pct:.1f}%) superan los sólidos totales que ingresaste "
+        f"({solidos_pct:.1f}%), lo cual no es físicamente posible en la leche (los sólidos "
+        "totales incluyen la grasa y la proteína, más lactosa y minerales). "
+        "El cálculo continúa con los valores ingresados, pero corrígelos si fue un error de digitación."
+    )
 
 if enviado:
     finca_lat, finca_lon = MUNICIPIOS_COORDS[municipio]
@@ -218,13 +234,26 @@ if enviado:
                     )
 
         st.subheader("Mapa de la región")
-        mapa = construir_mapa(
-            tiendas_df, acopios_df, finca=(finca_lat, finca_lon), tienda_optima_id=mejor["tienda_id"],
-            acopio_optimo_id=mejor["acopio_id"],
-        )
-        st_folium(mapa, use_container_width=True, height=500, key="mapa_resultado")
+        try:
+            mapa = construir_mapa(
+                tiendas_df, acopios_df, finca=(finca_lat, finca_lon), tienda_optima_id=mejor["tienda_id"],
+                acopio_optimo_id=mejor["acopio_id"],
+            )
+            st_folium(mapa, use_container_width=True, height=500, key="mapa_resultado")
+        except Exception:
+            st.warning(
+                "⚠️ No se pudo cargar el mapa (puede deberse a que no tienes conexión a internet "
+                "en este momento, ya que el mapa usa imágenes de OpenStreetMap). "
+                "El cálculo del margen y la tabla de resultados no se ven afectados."
+            )
 else:
     st.info("Completa el formulario y presiona **Calcular la mejor combinación** para ver tu resultado.")
     st.subheader("Mapa de establecimientos en la provincia de Ubaté")
-    mapa = construir_mapa(tiendas_df, acopios_df)
-    st_folium(mapa, use_container_width=True, height=500, key="mapa_inicial")
+    try:
+        mapa = construir_mapa(tiendas_df, acopios_df)
+        st_folium(mapa, use_container_width=True, height=500, key="mapa_inicial")
+    except Exception:
+        st.warning(
+            "⚠️ No se pudo cargar el mapa (puede deberse a que no tienes conexión a internet en "
+            "este momento). Puedes seguir usando el formulario con normalidad."
+        )

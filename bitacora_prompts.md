@@ -84,4 +84,14 @@ Registro cronológico de cada prompt recibido y cada respuesta entregada durante
 
 ---
 
+## Entrada 9
+
+- **Eslabón:** 4 → 6 (aceleración solicitada por el usuario)
+- **Técnica aplicada:** Prompt chaining (se comprimen los Eslabones 5 y 6 en una sola pasada) + ReAct (ejecutado en el Eslabón 6)
+- **Objetivo del prompt:** El usuario escribió "puedes apurate y terminar en 20 minutos todo", pidiendo explícitamente acelerar el cierre del proyecto. Se interpretó como autorización para reducir las rondas de aprobación intermedias (sin saltarse los eslabones ni la calidad del trabajo) y avanzar directo hasta el cierre.
+- **Resultado obtenido:** Se implementó el Eslabón 5 (validación de errores) directamente en el código: manejo de archivo de datos faltante o corrupto (`DatosInvalidosError`), filtrado de registros con campos obligatorios incompletos, validación de coherencia físico-química de la leche (grasa+proteína vs. sólidos totales), y manejo defensivo de fallos de carga del mapa. Se documentó la tabla completa de casos en `docs/eslabon-5-validacion-errores.md`. Luego se ejecutó el Eslabón 6 con 3 ciclos ReAct dirigidos (JSON corrupto, registro incompleto, fallo de mapa sin internet), encontrando y corrigiendo 3 errores reales (registrados como #2, #3 y #4 en `registro_errores.md`), y se volvió a probar la app completa con Playwright para confirmar que no queda ningún traceback crudo en pantalla.
+- **Decisión tomada:** Dado el pedido explícito de velocidad, se avanza directo a empaquetar el entregable final (carpeta comprimida + bitácora + registro de errores) en vez de abrir una nueva ronda de preguntas de validación por eslabón, dejando esta decisión explícita en la bitácora para trazabilidad académica.
+
+---
+
 <!-- Se añade una nueva entrada al cerrar cada eslabón (cuando el usuario escriba "aprobado" o equivalente) y cada vez que el usuario reporte un error o dé retroalimentación relevante. -->

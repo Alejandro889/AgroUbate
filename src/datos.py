@@ -25,22 +25,68 @@ MUNICIPIOS_COORDS = {
 }
 
 
+class DatosInvalidosError(Exception):
+    """Error de datos que debe mostrarse al usuario en español, sin traza técnica."""
+
+
 def _cargar_json(nombre_archivo: str) -> list:
     ruta = DATA_DIR / nombre_archivo
     if not ruta.exists():
-        raise FileNotFoundError(
-            f"No se encontró el archivo de datos '{nombre_archivo}' en {DATA_DIR}. "
-            "Verifica que la carpeta 'data' esté completa."
+        raise DatosInvalidosError(
+            f"No se encontró el archivo de datos '{nombre_archivo}'. "
+            "Verifica que la carpeta 'data' esté completa junto al aplicativo."
         )
-    with open(ruta, encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(ruta, encoding="utf-8") as f:
+            datos = json.load(f)
+    except json.JSONDecodeError as e:
+        raise DatosInvalidosError(
+            f"El archivo de datos '{nombre_archivo}' está dañado o mal formado y no se pudo leer "
+            f"(línea {e.lineno}, columna {e.colno}). Restaura una copia válida del archivo."
+        ) from e
+    if not isinstance(datos, list) or len(datos) == 0:
+        raise DatosInvalidosError(
+            f"El archivo de datos '{nombre_archivo}' no contiene registros válidos."
+        )
+    return datos
+
+
+_CAMPOS_OBLIGATORIOS_TIENDA = {"id", "nombre", "municipio", "latitud", "longitud", "precios"}
+_CAMPOS_OBLIGATORIOS_ACOPIO = {
+    "id",
+    "nombre",
+    "municipio",
+    "latitud",
+    "longitud",
+    "precio_base_litro",
+    "bonificaciones_calidad",
+    "volumen_minimo_litros_dia",
+    "frecuencia_recoleccion",
+    "plazo_pago_dias",
+    "recoge_en_finca",
+}
+
+
+def _filtrar_registros_validos(datos: list, campos_obligatorios: set, nombre_archivo: str) -> list:
+    validos = []
+    for registro in datos:
+        if campos_obligatorios.issubset(registro.keys()):
+            validos.append(registro)
+    if not validos:
+        raise DatosInvalidosError(
+            f"Ningún registro de '{nombre_archivo}' tiene los campos obligatorios completos. "
+            "Revisa el archivo de datos."
+        )
+    return validos
 
 
 def cargar_tiendas() -> pd.DataFrame:
     datos = _cargar_json("tiendas_insumos.json")
+    datos = _filtrar_registros_validos(datos, _CAMPOS_OBLIGATORIOS_TIENDA, "tiendas_insumos.json")
     return pd.json_normalize(datos)
 
 
 def cargar_acopios() -> pd.DataFrame:
     datos = _cargar_json("centros_acopio.json")
+    datos = _filtrar_registros_validos(datos, _CAMPOS_OBLIGATORIOS_ACOPIO, "centros_acopio.json")
     return pd.json_normalize(datos)
