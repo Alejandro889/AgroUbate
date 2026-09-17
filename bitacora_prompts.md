@@ -44,4 +44,24 @@ Registro cronológico de cada prompt recibido y cada respuesta entregada durante
 
 ---
 
+## Entrada 5
+
+- **Eslabón:** 2 → 3
+- **Técnica aplicada:** Prompt chaining (cierre y transición de fase)
+- **Objetivo del prompt:** El usuario respondió "si, si, si" a las 3 preguntas de validación del Eslabón 2 (cobertura geográfica, insumos relevantes, esquema de bonificaciones), lo que se interpreta como aprobación explícita.
+- **Resultado obtenido:** Se cierra el Eslabón 2 con el dataset definitivo (`data/tiendas_insumos.json`, `data/centros_acopio.json`, `data/fuentes.md`). Se inicia el Eslabón 3 (lógica de negocio).
+- **Decisión tomada:** Avanzar al Eslabón 3 usando el dataset aprobado como insumo directo (prompt chaining).
+
+---
+
+## Entrada 6
+
+- **Eslabón:** 3 (lógica de negocio)
+- **Técnica aplicada:** Prompt chaining (usa el dataset del Eslabón 2 como entrada) + cadena de pensamiento (para decidir cómo modelar el precio por calidad de forma realista)
+- **Objetivo del prompt:** Formular las fórmulas de ingreso, costo de insumos, costo de transporte, costo de entrega de leche y margen neto, definir variables de entrada/calculadas, reglas de desempate, manejo de volumen mínimo no alcanzado, y resolver un ejemplo numérico con cifras del dataset ya aprobado.
+- **Resultado obtenido:** Se detectó que aplicar el precio por gramo de proteína/grasa/sólidos al contenido TOTAL de la leche (en vez de a la diferencia frente a una composición de referencia) generaría bonificaciones irrealmente altas (>$500 extra por litro sobre un precio base de ~$1.750). Se corrigió el modelo a un esquema marginal (diferencia sobre referencia), consistente con cómo opera en la práctica el sistema de pago por calidad colombiano, dejando explícitamente marcada como ESTIMADA la composición de referencia usada (grasa 3,0%, proteína 3,0%, sólidos totales 11,3%) porque no se encontró publicada en las fuentes del Eslabón 2. Se escribió `docs/eslabon-3-logica-negocio.md` con todas las fórmulas, la tabla de variables, las reglas de desempate, el manejo del caso "ningún acopio cumple el volumen mínimo", y un ejemplo numérico resuelto paso a paso (finca en Cucunubá, 80 L/día) comparando una combinación óptima ($4.875.580/mes) contra una peor opción viable ($4.375.280/mes) y una combinación excluida por no alcanzar el volumen mínimo.
+- **Decisión tomada:** Presentar el entregable y solicitar 4 preguntas de validación (transporte, plazo de pago, perfil de litros/día, y la composición de referencia estimada) antes de cerrar el Eslabón 3.
+
+---
+
 <!-- Se añade una nueva entrada al cerrar cada eslabón (cuando el usuario escriba "aprobado" o equivalente) y cada vez que el usuario reporte un error o dé retroalimentación relevante. -->
