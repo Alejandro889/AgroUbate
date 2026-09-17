@@ -14,4 +14,14 @@ Registro cronológico de cada prompt recibido y cada respuesta entregada durante
 
 ---
 
+## Entrada 2
+
+- **Eslabón:** 1 (respuesta a las preguntas de validación)
+- **Técnica aplicada:** ReAct (cierre del ciclo iniciado en la Entrada 1)
+- **Objetivo del prompt:** El usuario respondió las 3 preguntas de validación del Eslabón 1: (a) especificaciones del equipo (captura de pantalla: HP ProOne 440 G9, Intel Core i7-12700T, 32,0 GB RAM, 477 GB de almacenamiento, Windows 11 Pro), (b) el docente no exige un lenguaje específico pero se usará Python, (c) prioridad: equilibrio entre buena interfaz y buen funcionamiento (ni solo simplicidad, ni solo realismo).
+- **Resultado obtenido:** Se confirmó que el hardware (32 GB RAM, i7 de 12.ª generación) elimina cualquier restricción de consumo de recursos, que Python coincide con el stack ya recomendado, y que Streamlit sigue siendo la opción correcta porque permite lograr una interfaz cuidada (columnas, pestañas, tema, mapas y gráficos interactivos) sin necesitar HTML/CSS/JS manual. No se detectaron contradicciones ni ambigüedades en las respuestas.
+- **Decisión tomada:** Mantener el stack recomendado (Streamlit + pandas + streamlit-folium/Leaflet + JSON/CSV) y solicitar la confirmación explícita ("aprobado") para cerrar formalmente el Eslabón 1 antes de iniciar el Eslabón 2 (datos de la región).
+
+---
+
 <!-- Se añade una nueva entrada al cerrar cada eslabón (cuando el usuario escriba "aprobado" o equivalente) y cada vez que el usuario reporte un error o dé retroalimentación relevante. -->
